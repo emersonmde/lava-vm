@@ -1,10 +1,15 @@
-package class_parser
+package class_file
 
 import (
 	"encoding/binary"
 	"fmt"
 	"os"
+	"unicode/utf8"
 )
+
+type ConstantPool struct {
+	entries []ConstantPoolEntry
+}
 
 type ConstantPoolEntry struct {
 	Tag   uint8             // The tag representing the type of constant pool entry
@@ -26,6 +31,8 @@ func (c *ConstantUtf8Value) String() string {
 
 // readConstantUtf8Value reads a ConstantUtf8Value from the provided file.
 // It returns the ConstantPoolValue and any error encountered.
+// readConstantUtf8Value reads a ConstantUtf8Value from the provided file.
+// It returns the ConstantPoolValue and any error encountered.
 func readConstantUtf8Value(file *os.File) (ConstantPoolValue, error) {
 	value := ConstantUtf8Value{}
 	if err := binary.Read(file, binary.BigEndian, &value.Length); err != nil {
@@ -34,6 +41,9 @@ func readConstantUtf8Value(file *os.File) (ConstantPoolValue, error) {
 	value.Bytes = make([]byte, value.Length)
 	if err := binary.Read(file, binary.BigEndian, &value.Bytes); err != nil {
 		return nil, err
+	}
+	if !utf8.Valid(value.Bytes) {
+		return nil, fmt.Errorf("invalid UTF-8 sequence")
 	}
 	return &value, nil
 }

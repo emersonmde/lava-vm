@@ -14,6 +14,7 @@ development and is mostly a mechanism for me to learn Go.
 # References
 
 - [Java Class File Format](https://en.wikipedia.org/wiki/Java_class_file)
+- [Java Class File JVM Spec](https://docs.oracle.com/javase/specs/jvms/se6/html/ClassFile.doc.html)
 
 ## License
 

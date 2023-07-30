@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"lava-vm/pkg/class_parser"
+	"lava-vm/pkg/class_file"
 	"os"
 )
 
@@ -12,12 +12,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	class, err := class_parser.Parse(os.Args[1])
+	class, err := class_file.Parse(os.Args[1])
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error reading class file: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Display the class contents.
-	class.Display()
+	fmt.Printf("\n\nClass: %s\n", class)
 }
