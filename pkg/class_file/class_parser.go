@@ -16,15 +16,14 @@ type Class struct {
 	AccessFlags       uint16
 	ThisClass         uint16
 	SuperClass        uint16
-	// TODO: finish below attributes
-	InterfacesCount uint16
-	Interfaces      []uint16
-	FieldsCount     uint16
-	Fields          []Field
-	MethodsCount    uint16
-	Methods         []Method
-	AttributesCount uint16
-	Attributes      []Attribute
+	InterfacesCount   uint16
+	Interfaces        []uint16
+	FieldsCount       uint16
+	Fields            []Field
+	MethodsCount      uint16
+	Methods           []Method
+	AttributesCount   uint16
+	Attributes        []Attribute
 }
 
 func Parse(filename string) (*Class, error) {
