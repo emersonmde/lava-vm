@@ -2,14 +2,15 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-LavaVM is a project aimed at building a Java Virtual Machine (JVM) implementation in Go. This project is in early
-development and is mostly a mechanism for me to learn Go. 
+LavaVM is a project aimed at building a Java Virtual Machine (JVM) implementation in Go. This is a personal project
+for learning more about how the JVM works and is an excuse for me to learn Go. 
 
 
 ## Components
 
 - **Class Parser**: Responsible for parsing .class files. It reads and validates the magic byte, minor and major version, and the constant pool count.
 - **Constant Pool Parser**: Reads constant pool entries from the .class file. Currently supports parsing UTF8, Integer, Float, Long, Double, Class, String, FieldRef, MethodRef, InterfaceMethodRef, NameAndType, MethodHandle, MethodType, Dynamic, InvokeDynamic, and Module constants.
+- **Execution Engine**: Finds the main mentod, reads the bytecode, then starts executing it
 
 # References
 
