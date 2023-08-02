@@ -54,8 +54,6 @@ func parseCodeAttribute(attr *Attribute) (*Code, error) {
 			return nil, err
 		}
 	}
-	// Parse attributes if necessary
-	// ...
 
 	return code, nil
 }

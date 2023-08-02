@@ -27,13 +27,15 @@ func (cp *ConstantPool) GetConstantName(index uint16) string {
 }
 
 type ConstantPoolEntry struct {
-	Tag   uint8             // The tag representing the type of constant pool entry
-	Value ConstantPoolValue // Data specific to the constant pool entry type
+	// The tag representing the type of constant pool entry
+	Tag uint8
+	// Data specific to the constant pool entry type
+	Value ConstantPoolValue
 }
 
 type ConstantPoolValue interface{}
 
-// ConstantUtf8Value represents a UTF-8 string in a Java class file.
+// ConstantUtf8Value represents a UTF-8 string in a Java class file
 type ConstantUtf8Value struct {
 	Length uint16
 	Bytes  []byte

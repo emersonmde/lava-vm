@@ -80,8 +80,6 @@ func Parse(filename string) (*Class, error) {
 		return nil, fmt.Errorf("reading super class: %w", err)
 	}
 
-	// Continue from the "Parse other parts of the class file here" comment
-
 	if err = binary.Read(file, binary.BigEndian, &class.InterfacesCount); err != nil {
 		return nil, fmt.Errorf("reading interfaces count: %w", err)
 	}
@@ -123,10 +121,6 @@ func Parse(filename string) (*Class, error) {
 			return nil, fmt.Errorf("reading attribute %d: %w", i, err)
 		}
 	}
-
-	return class, nil
-
-	// Parse other parts of the class file here
 
 	return class, nil
 }

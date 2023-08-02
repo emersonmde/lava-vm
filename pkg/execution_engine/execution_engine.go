@@ -50,7 +50,6 @@ func NewExectuionEngine(class *Class) *ExecutionEngine {
 		heap:  &Heap{},
 		stack: &OperandStack{},
 	}
-	//return &ExecutionEngine{class: class}
 }
 
 func (e *ExecutionEngine) Execute() error {
@@ -100,7 +99,6 @@ func (e *ExecutionEngine) allocateObject() uint32 {
 
 func (e *ExecutionEngine) getMainMethod() (Method, error) {
 	for _, method := range e.class.Methods {
-		// Assuming you have a method to get method's name
 		name, err := e.class.GetConstantName(method.NameIndex)
 		if err != nil {
 			return Method{}, err

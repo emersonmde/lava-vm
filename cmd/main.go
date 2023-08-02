@@ -21,6 +21,4 @@ func main() {
 
 	executionEngine := execution_engine.NewExectuionEngine(class)
 	err = executionEngine.Execute()
-
-	//fmt.Printf("\n\nClass: %s\n", class)
 }
