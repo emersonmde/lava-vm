@@ -1,4 +1,4 @@
-package class_file
+package class
 
 import (
 	"encoding/binary"
@@ -9,6 +9,21 @@ import (
 
 type ConstantPool struct {
 	entries []ConstantPoolEntry
+}
+
+func (cp *ConstantPool) Get(index uint16) ConstantPoolEntry {
+	return cp.entries[index-1]
+}
+
+func (cp *ConstantPool) GetConstantName(index uint16) string {
+	if index == 0 || index >= uint16(len(cp.entries)) {
+		return ""
+	}
+	entry := cp.entries[index]
+	if utf8Entry, ok := entry.Value.(*ConstantUtf8Value); ok {
+		return utf8Entry.String()
+	}
+	return ""
 }
 
 type ConstantPoolEntry struct {
@@ -249,7 +264,7 @@ func readConstantPool(file *os.File, class *Class) (err error) {
 		return err
 	}
 
-	class.ConstantPool = make([]ConstantPoolEntry, class.ConstantPoolCount)
+	class.ConstantPool.entries = make([]ConstantPoolEntry, class.ConstantPoolCount)
 
 	for i := uint16(1); i < class.ConstantPoolCount; i++ {
 		var tag uint8
@@ -269,12 +284,12 @@ func readConstantPool(file *os.File, class *Class) (err error) {
 			return err
 		}
 
-		class.ConstantPool[i] = ConstantPoolEntry{Tag: tag, Value: value}
+		class.ConstantPool.entries[i] = ConstantPoolEntry{Tag: tag, Value: value}
 
 		if tag == 5 || tag == 6 {
 			i++
 			if i < class.ConstantPoolCount {
-				class.ConstantPool[i] = ConstantPoolEntry{}
+				class.ConstantPool.entries[i] = ConstantPoolEntry{}
 			}
 		}
 	}

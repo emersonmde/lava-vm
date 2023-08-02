@@ -1,4 +1,4 @@
-package class_file
+package class
 
 import (
 	"encoding/binary"
@@ -12,7 +12,7 @@ type Class struct {
 	MinorVersion      uint16
 	MajorVersion      uint16
 	ConstantPoolCount uint16
-	ConstantPool      []ConstantPoolEntry
+	ConstantPool      ConstantPool
 	AccessFlags       uint16
 	ThisClass         uint16
 	SuperClass        uint16
@@ -24,6 +24,17 @@ type Class struct {
 	Methods           []Method
 	AttributesCount   uint16
 	Attributes        []Attribute
+}
+
+func (c *Class) GetConstantName(index uint16) (string, error) {
+	if index == 0 || index >= uint16(len(c.ConstantPool.entries)) {
+		return "", fmt.Errorf("invalid constant pool index: %d", index)
+	}
+	entry := c.ConstantPool.entries[index]
+	if utf8Entry, ok := entry.Value.(*ConstantUtf8Value); ok {
+		return utf8Entry.String(), nil
+	}
+	return "", fmt.Errorf("index does not point to a UTF-8 constant: %d", index)
 }
 
 func Parse(filename string) (*Class, error) {
@@ -97,7 +108,7 @@ func Parse(filename string) (*Class, error) {
 
 	class.Methods = make([]Method, class.MethodsCount)
 	for i := range class.Methods {
-		if err = readMethod(file, &class.Methods[i]); err != nil {
+		if err = readMethod(file, &class.Methods[i], &class.ConstantPool); err != nil {
 			return nil, fmt.Errorf("reading method %d: %w", i, err)
 		}
 	}
@@ -130,9 +141,9 @@ func (c Class) String() string {
 
 	for i := uint16(1); i < c.ConstantPoolCount; i++ {
 		fmt.Fprintf(&builder, "\n\tConstant #%d\n", i)
-		fmt.Fprintf(&builder, "\tTag: %v\n", c.ConstantPool[i].Tag)
+		fmt.Fprintf(&builder, "\tTag: %v\n", c.ConstantPool.entries[i].Tag)
 
-		switch v := c.ConstantPool[i].Value.(type) {
+		switch v := c.ConstantPool.entries[i].Value.(type) {
 		case fmt.Stringer:
 			fmt.Fprintf(&builder, "\tType: %T Value: %s\n", v, v.String())
 		default:
@@ -141,7 +152,7 @@ func (c Class) String() string {
 	}
 
 	fmt.Fprintf(&builder, "\nAccess Flags: 0x%04X\n", c.AccessFlags)
-	fmt.Fprintf(&builder, "This Class: %d: %s\n", c.ThisClass, c.ConstantPool[c.ThisClass].Value)
+	fmt.Fprintf(&builder, "This Class: %d: %s\n", c.ThisClass, c.ConstantPool.entries[c.ThisClass].Value)
 	fmt.Fprintf(&builder, "Super Class: %d\n", c.SuperClass)
 
 	fmt.Fprintf(&builder, "Interfaces Count: %d\n", c.InterfacesCount)

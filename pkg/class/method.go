@@ -1,4 +1,4 @@
-package class_file
+package class
 
 import (
 	"encoding/binary"
@@ -13,10 +13,22 @@ type Method struct {
 	DescriptorIndex uint16
 	AttributesCount uint16
 	Attributes      []Attribute
+	constantPool    *ConstantPool
+}
+
+func (m *Method) GetCode() (*Code, error) {
+	for _, attr := range m.Attributes {
+		fmt.Printf("Getting attribute %+v\n", m.constantPool.GetConstantName(attr.AttributeNameIndex))
+		if m.constantPool.GetConstantName(attr.AttributeNameIndex) == "Code" {
+			return parseCodeAttribute(&attr)
+		}
+	}
+	return nil, fmt.Errorf("Bytecode attribute not found")
 }
 
 // Read a Method from the given file
-func readMethod(file *os.File, method *Method) error {
+func readMethod(file *os.File, method *Method, cp *ConstantPool) error {
+	method.constantPool = cp
 	if err := binary.Read(file, binary.BigEndian, &method.AccessFlags); err != nil {
 		return fmt.Errorf("reading access flags: %w", err)
 	}

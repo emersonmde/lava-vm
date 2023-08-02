@@ -1,4 +1,4 @@
-package class_file
+package class
 
 import (
 	"encoding/binary"
