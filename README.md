@@ -2,9 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-LavaVM is a project aimed at building a Java Virtual Machine (JVM) implementation in Go. This is a personal project
-for learning more about how the JVM works and is an excuse for me to learn Go. 
-
+LavaVM is an eduicational project aimed at building a Java Virtual Machine (JVM) implementation in Go.
 
 ## Components
 
