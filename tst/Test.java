@@ -1,8 +1,10 @@
 public class Test {
-  private String foo;
-  public Test() {
-    this.foo = "Yes";
-  }
+    private String foo;
+
+    public Test() {
+        this.foo = "Yes";
+    }
+
     public static void main(String[] args) {
       Test test = new Test();
       test.foo();
