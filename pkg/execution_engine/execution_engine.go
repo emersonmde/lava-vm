@@ -75,11 +75,29 @@ func (e *ExecutionEngine) Execute() error {
 	for _, instruction := range instructions {
 		switch instruction.Opcode {
 		case 0xbb: // "new" opcode
-
 			objectRef := e.allocateObject()
 			e.stack.Push(objectRef)
 			fmt.Printf("Created new object with reference: %v\n", objectRef)
-		// Handle other instructions...
+		case 0x60: // "iadd" opcode
+			err := e.iadd()
+			if err != nil {
+				return err
+			}
+		case 0x64: // "isub" opcode
+			err := e.isub()
+			if err != nil {
+				return err
+			}
+		case 0x68: // "imul" opcode
+			err := e.imul()
+			if err != nil {
+				return err
+			}
+		case 0x6c: // "idiv" opcode
+			err := e.idiv()
+			if err != nil {
+				return err
+			}
 		default:
 			fmt.Printf("Unhandled instruction: %02x\n", instruction.Opcode)
 		}
@@ -111,4 +129,63 @@ func (e *ExecutionEngine) getMainMethod() (Method, error) {
 	}
 
 	return Method{}, errors.New("main method not found in the class")
+}
+
+func (e *ExecutionEngine) iadd() error {
+	op1Int, op2Int, err := e.popBinaryOpInt()
+	if err != nil {
+		return err
+	}
+	sum := op1Int + op2Int
+	e.stack.Push(sum)
+	return nil
+}
+
+func (e *ExecutionEngine) isub() error {
+	op1Int, op2Int, err := e.popBinaryOpInt()
+	if err != nil {
+		return err
+	}
+	diff := op1Int - op2Int
+	e.stack.Push(diff)
+	return nil
+}
+
+func (e *ExecutionEngine) imul() error {
+	op1Int, op2Int, err := e.popBinaryOpInt()
+	if err != nil {
+		return err
+	}
+	product := op1Int * op2Int
+	e.stack.Push(product)
+	return nil
+}
+
+func (e *ExecutionEngine) idiv() error {
+	op1Int, op2Int, err := e.popBinaryOpInt()
+	if err != nil {
+		return err
+	}
+
+	if op2Int == 0 {
+		return errors.New("divide by zero")
+	}
+
+	quotient := op1Int / op2Int
+	e.stack.Push(quotient)
+	return nil
+}
+
+func (e *ExecutionEngine) popBinaryOpInt() (int32, int32, error) {
+	// Pop the top two elements from the stack
+	op1 := e.stack.Pop()
+	op2 := e.stack.Pop()
+
+	// Check that they are both integers
+	op1Int, ok1 := op1.(int32)
+	op2Int, ok2 := op2.(int32)
+	if !ok1 || !ok2 {
+		return 0, 0, errors.New("operand not an integer")
+	}
+	return op1Int, op2Int, nil
 }
